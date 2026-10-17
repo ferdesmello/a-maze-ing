@@ -11,6 +11,26 @@ brief overview.
 any relevant information about compilation,
 installation, and/or execution.
 
+### Virtual environment
+
+Create one following:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+```bash
+deactivate
+```
+
+### Running
+
+```bash
+python3 a_maze_ing.py config.txt
+```
+
+
 ## Resources 
 
 classic references related to the topic (documentation, articles, tutorials, etc.), as well as a description of how AI was used — specifying for which tasks and which parts of the project.
