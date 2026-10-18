@@ -1,4 +1,5 @@
 import sys
+from typing import Any
 
 
 def load_maze_info_from_file(filename: str) -> str:
@@ -35,20 +36,24 @@ def save_maze_info_to_file(filename: str, info: str) -> None:
         sys.exit(1)
 
 
-def process_maze_info(config_info: str) -> dict[str, any]:
+def process_maze_info(config_info: str) -> dict[str, Any]:
     """Processes the loaded maze info into a dictionary
 
     Args:
         config_info (str): The loaded maze info to process
     Returns:
-        dict[str, any]: The processed maze info
+        dict[str, Any]: The processed maze info
     """
     lines: list[str] = config_info.splitlines()
-    processed_info: dict[str, any] = {}
+    processed_info: dict[str, Any] = {}
     try:
-        processed_info: dict[str, any] = {key: value for key, value in (
-            line.split('=') for line in lines if '=' in line
-            )}
+        for line in lines:
+            if '=' in line:
+                key: str
+                value: str
+                key, value = line.split('=')
+                processed_info[key] = value
+
     except ValueError:
         print("Error: Invalid maze info format.")
         sys.exit(1)
@@ -57,19 +62,19 @@ def process_maze_info(config_info: str) -> dict[str, any]:
     return processed_info
 
 
-def test_maze_info(maze_info: dict[str, any]) -> dict[str, any]:
+def test_maze_info(maze_info: dict[str, Any]) -> dict[str, Any]:
     """Tests the loaded maze info
 
     Args:
-        maze_info (dict[str, any]): The loaded maze info to test
+        maze_info (dict[str, Any]): The loaded maze info to test
     """
 
     needed_keys: list[str] = [
-        "WIDTH", 
-        "HEIGHT", 
-        "ENTRY", 
-        "EXIT", 
-        "OUTPUT_FILE", 
+        "WIDTH",
+        "HEIGHT",
+        "ENTRY",
+        "EXIT",
+        "OUTPUT_FILE",
         "PERFECT"
         ]
 
@@ -145,9 +150,9 @@ def test_maze_info(maze_info: dict[str, any]) -> dict[str, any]:
 def main() -> None:
     """Main function of the project"""
     config_info: str = load_maze_info_from_file("config.txt")
-    maze_info: dict[str, any] = process_maze_info(config_info)
-    test_maze_info(maze_info)
-    save_maze_info_to_file(maze_info["OUTPUT_FILE"], config_info)
+    maze_info: dict[str, Any] = process_maze_info(config_info)
+    maze_info = test_maze_info(maze_info)
+    save_maze_info_to_file(maze_info["OUTPUT_FILE"], str(maze_info))
 
 
 if __name__ == "__main__":
