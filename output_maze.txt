@@ -1,1 +1,18 @@
-{'WIDTH': 20, 'HEIGHT': 15, 'ENTRY': (0, 0), 'EXIT': (19, 14), 'OUTPUT_FILE': 'output_maze.txt', 'PERFECT': False, 'SEED': 50}
+d7ffffffffffffffffff
+ffffffffffffffffffff
+ffffffffffffffffffff
+ffffffffffffffffffff
+ffffffffffffffffffff
+ffffffffffffffffffff
+ffffffffffffffffffff
+ffffffffffffffffffff
+ffffffffffffffffffff
+ffffffffffffffffffff
+ffffffffffffffffffff
+ffffffffffffffffffff
+ffffffffffffffffffff
+ffffffffffffffffffff
+ffffffffffffffffffff
+
+0, 0     # entry  (x, y)
+19, 14     # exit  (x, y)
