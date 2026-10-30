@@ -4,6 +4,12 @@ import sys
 from typing import Any
 
 
+NORTH: int = 0b0001
+EAST:  int = 0b0010
+SOUTH: int = 0b0100
+WEST:  int = 0b1000
+
+
 def load_maze_info_from_file(filename: str) -> str:
     """Loads maze info from a file
 
@@ -168,6 +174,36 @@ def test_maze_info(maze_info: dict[str, Any]) -> dict[str, Any]:
 
     print("Maze info tested successfully.")
     return maze_info
+
+
+def check_wall_consistency(maze_hex: list[list[int]]) -> bool:
+    """Check whether adjacent cells agree on shared walls.
+
+    Args:
+        maze_hex (list[list[int]]): The maze grid to check
+    Returns:
+        bool: True if the maze is consistent, False otherwise
+    """
+    height = len(maze_hex)
+    width = len(maze_hex[0])
+
+    for y in range(height):
+        for x in range(width):
+            current = maze_hex[y][x]
+
+            # Check the east wall.
+            if x < width - 1:
+                neighbor = maze_hex[y][x + 1]
+                if bool(current & EAST) != bool(neighbor & WEST):
+                    return False
+
+            # Check the south wall.
+            if y < height - 1:
+                neighbor = maze_hex[y + 1][x]
+                if bool(current & SOUTH) != bool(neighbor & NORTH):
+                    return False
+
+    return True
 
 
 if __name__ == "__main__":

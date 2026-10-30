@@ -48,3 +48,25 @@ classic references related to the topic (documentation, articles, tutorials, etc
 
 ## Advanced features 
 (multiple algorithms, display options...)
+
+
+
+| Código Binário <br> (C-D-B-E) | Paredes Ativas | Símbolo / Desenho | Como fica na Tabela |
+| :---: | :--- | :---: | :---: |
+| **0000** | Nenhuma parede (Vazio) | ` ` |   |
+| **1000** | Apenas o **Topo** | `‾` | ‾ |
+| **0100** | Apenas a **Direita** | ` │` |  │ |
+| **0010** | Apenas o **Fundo** | `_` | _ |
+| **0001** | Apenas a **Esquerda** | `│ ` | │  |
+| **1100** | Topo e Direita (**Canto Sup. Dir.**) | `┐` | ┐ |
+| **0110** | Direita e Fundo (**Canto Inf. Dir.**) | `┘` | ┘ |
+| **0011** | Fundo e Esquerda (**Canto Inf. Esq.**) | `└` | └ |
+| **1001** | Topo e Esquerda (**Canto Sup. Esq.**) | `┌` | ┌ |
+| **1010** | Topo e Fundo (**Paralelas Horizontais**) | `_` e `‾` | ⬟ |
+| **0101** | Direita e Esquerda (**Paralelas Verticais**) | `│ │` | │ │ |
+| **1110** | Topo, Direita e Fundo (**Sem Esquerda**) | `⊐` | ⊐ |
+| **0111** | Direita, Fundo e Esquerda (**Sem Topo**) | `⊔` | ⊔ |
+| **1011** | Topo, Fundo e Esquerda (**Sem Direita**) | `⊏` | ⊏ |
+| **1101** | Topo, Direita e Esquerda (**Sem Fundo**) | `⊓` | ⊓ |
+| **1111** | **Todas as 4 paredes** (Quadrado Cheio) | `▢` | ▢ |
+
