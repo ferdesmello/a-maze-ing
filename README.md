@@ -140,3 +140,7 @@ Hexadecimal values for the walls
 | **1011** | Topo, Fundo e Esquerda (**Sem Direita**) | `⊏` | ⊏ |
 | **1101** | Topo, Direita e Esquerda (**Sem Fundo**) | `⊓` | ⊓ |
 | **1111** | **Todas as 4 paredes** (Quadrado Cheio) | `▢` | ▢ |
+
+<img src="path" width="10" alt="top">
+
+![top](path)
