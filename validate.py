@@ -45,13 +45,15 @@ def load_maze_info_from_file(filename: str) -> str:
 
 def save_maze_info_to_file(
         maze_info: dict[str, Any],
-        maze_hex: list[list[int]]
+        maze_hex: list[list[int]],
+        path: list[str]
         ) -> None:
     """Saves output maze info into a file
 
     Args:
         maze_info (dict[str, Any]): The maze info to save
         maze_hex (list[list[int]]): The maze grid to save
+        path (list[str]): The shortest path
     """
     filename: str = maze_info["OUTPUT_FILE"]
     try:
@@ -68,6 +70,10 @@ def save_maze_info_to_file(
             exit_file.write(f"{maze_info['EXIT'][0]}, "
                             f"{maze_info['EXIT'][1]}")
             exit_file.write("     # exit  (x, y)\n")
+
+            for direction in path:
+                exit_file.write(direction)
+            
 
         print(f"Maze info saved in file '{filename}'.")
     except IOError:

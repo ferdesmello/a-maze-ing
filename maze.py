@@ -96,7 +96,7 @@ def get_neighbors(
     if not (0 <= x < width and 0 <= y < height):
         raise ValueError("Cell coordinates are outside the maze.")
 
-    neighbors = []
+    neighbors: list[tuple[int, int, str]] = []
 
     if y > 0:
         neighbors.append((x, y - 1, "N"))
@@ -133,6 +133,7 @@ def get_unvisited_neighbors(
     visited: list[list[bool]]
 ) -> list[tuple[int, int, str]]:
     """Return neighboring cells that have not been visited.
+
     Args:
         x (int): The x coordinate of the cell
         y (int): The y coordinate of the cell

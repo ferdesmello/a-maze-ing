@@ -6,6 +6,7 @@ import sys
 
 import validate as val
 import maze
+import maze_solver as ms
 
 
 def main() -> None:
@@ -48,13 +49,16 @@ def main() -> None:
     else:
         print("Maze wall consistency check passed.")
 
-
     maze.display_maze(maze_hex)
 
+    path: list[str] = ms.find_shortest_path(
+        maze_hex, 
+        maze_info['ENTRY'], 
+        maze_info['EXIT']
+        )
 
 
-
-    val.save_maze_info_to_file(maze_info, maze_hex)
+    val.save_maze_info_to_file(maze_info, maze_hex, path)
 
 
 if __name__ == "__main__":
