@@ -2,6 +2,7 @@
 
 from typing import Any
 import random
+import sys
 
 import validate as val
 import maze
@@ -9,7 +10,8 @@ import maze
 
 def main() -> None:
     """Main function of the project"""
-    config_info: str = val.load_maze_info_from_file("config.txt")
+    config_file: str = val.get_config_file_name()
+    config_info: str = val.load_maze_info_from_file(config_file)
     maze_info: dict[str, Any] = val.process_maze_info(config_info)
     maze_info = val.test_maze_info(maze_info)
 

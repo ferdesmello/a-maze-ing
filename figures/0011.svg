@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   fill="#000000"
+   width="800"
+   height="800"
+   viewBox="0 0 256 256"
+   id="Flat"
+   version="1.1"
+   sodipodi:docname="square-bold-svgrepo-com.svg"
+   inkscape:export-filename="0010.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:page
+       x="0"
+       y="0"
+       width="256"
+       height="256"
+       id="page2"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
+  <path
+     d="M 48,228 C 36.959468,227.98755 28.012455,219.04053 28,208 V 48 c 0.01245,-11.040532 8.959468,-19.987545 20,-20 0,0 0.03526,-0.183583 0,200 z"
+     id="path1"
+     sodipodi:nodetypes="ccccc"
+     inkscape:label="W"
+     style="display:none" />
+  <path
+     d="M 208,228 H 48 c -11.040532,-0.0125 -19.987545,-8.95947 -20,-20 0,0 -0.168525,0.0752 200,0 -0.0125,11.04053 -8.95947,19.98755 -20,20 z"
+     id="path2"
+     sodipodi:nodetypes="ccccc"
+     inkscape:label="S"
+     style="display:none" />
+  <path
+     d="m 208,228 c 0,0 -0.002,0.26394 0,-200 11.04053,0.01245 19.98755,8.959468 20,20 v 160 c -0.0125,11.04053 -8.95947,19.98755 -20,20 z"
+     id="path3"
+     sodipodi:nodetypes="ccccc"
+     inkscape:label="E"
+     style="display:inline" />
+  <path
+     d="M 28,48 C 28.01245,36.959468 36.959468,28.012455 48,28 h 160 c 11.04053,0.01245 19.98755,8.959468 20,20 C 27.91561,47.534256 28,48 28,48 Z"
+     id="path4"
+     sodipodi:nodetypes="ccccc"
+     inkscape:label="N"
+     style="display:inline" />
+</svg>

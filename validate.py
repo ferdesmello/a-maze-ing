@@ -10,6 +10,21 @@ SOUTH: int = 0b0100
 WEST:  int = 0b1000
 
 
+def get_config_file_name() -> str:
+    """Get the config file name from command line arguments or use default.
+
+    Returns:
+        str: The config file name
+    """
+    if len(sys.argv) == 2:
+        config_file: str = sys.argv[1]
+    else:
+        print("No config file provided.")
+        print("Using default config file: config.txt")
+        config_file: str = "config.txt"
+    return config_file
+
+
 def load_maze_info_from_file(filename: str) -> str:
     """Loads maze info from a file
 

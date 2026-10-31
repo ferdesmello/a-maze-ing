@@ -102,45 +102,21 @@ SEED=50
 
 
 Hexadecimal values for the walls
-| binary | decimal | hexdecimal | wall |
-|---|---|---|---|
-| 0b0000 | 0 | 0x0 | **None** |
-| 0b0001 | 1 | 0x1 | **NORTH** |
-| 0b0010 | 2 | 0x2 | **EAST** |
-| 0b0011 | 3 | 0x3 | N,E |
-| 0b0100 | 4 | 0x4 | **SOUTH** |
-| 0b0101 | 5 | 0x5 | N,S |
-| 0b0110 | 6 | 0x6 | E,S |
-| 0b0111 | 7 | 0x7 | N,E,S |
-| 0b1000 | 8 | 0x8 | **WEST** |
-| 0b1001 | 9 | 0x9 | N,W |
-| 0b1010 | 10 | 0xa | E,W |
-| 0b1011 | 11 | 0xb | N,E,W |
-| 0b1100 | 12 | 0xc | S,W |
-| 0b1101 | 13 | 0xd | N,S,W |
-| 0b1110 | 14 | 0xe | E,S,W |
-| 0b1111 | 15 | 0xf | **All** |
-
-
-| Código Binário <br> (C-D-B-E) | Paredes Ativas | Símbolo / Desenho | Como fica na Tabela |
-| :---: | :--- | :---: | :---: |
-| **0000** | Nenhuma parede (Vazio) | ` ` |   |
-| **1000** | Apenas o **Topo** | `‾` | ‾ |
-| **0100** | Apenas a **Direita** | ` │` |  │ |
-| **0010** | Apenas o **Fundo** | `_` | _ |
-| **0001** | Apenas a **Esquerda** | `│ ` | │  |
-| **1100** | Topo e Direita (**Canto Sup. Dir.**) | `┐` | ┐ |
-| **0110** | Direita e Fundo (**Canto Inf. Dir.**) | `┘` | ┘ |
-| **0011** | Fundo e Esquerda (**Canto Inf. Esq.**) | `└` | └ |
-| **1001** | Topo e Esquerda (**Canto Sup. Esq.**) | `┌` | ┌ |
-| **1010** | Topo e Fundo (**Paralelas Horizontais**) | `_` e `‾` | ⬟ |
-| **0101** | Direita e Esquerda (**Paralelas Verticais**) | `│ │` | │ │ |
-| **1110** | Topo, Direita e Fundo (**Sem Esquerda**) | `⊐` | ⊐ |
-| **0111** | Direita, Fundo e Esquerda (**Sem Topo**) | `⊔` | ⊔ |
-| **1011** | Topo, Fundo e Esquerda (**Sem Direita**) | `⊏` | ⊏ |
-| **1101** | Topo, Direita e Esquerda (**Sem Fundo**) | `⊓` | ⊓ |
-| **1111** | **Todas as 4 paredes** (Quadrado Cheio) | `▢` | ▢ |
-
-<img src="path" width="10" alt="top">
-
-![top](path)
+| binary | decimal | hexdecimal | wall | figure |
+|---|---|---|---|---|
+| 0b0000 | 0 | 0x0 | **None** | <img src="./figures/0000.svg" width="15" alt="0000"> |
+| 0b0001 | 1 | 0x1 | **NORTH** | <img src="./figures/0001.svg" width="15" alt="0001"> |
+| 0b0010 | 2 | 0x2 | **EAST** | <img src="./figures/0010.svg" width="15" alt="0010"> |
+| 0b0011 | 3 | 0x3 | N, E | <img src="./figures/0011.svg" width="15" alt="0011"> |
+| 0b0100 | 4 | 0x4 | **SOUTH** | <img src="./figures/0100.svg" width="15" alt="0100"> |
+| 0b0101 | 5 | 0x5 | N, S | <img src="./figures/0101.svg" width="15" alt="0101"> |
+| 0b0110 | 6 | 0x6 | E, S | <img src="./figures/0110.svg" width="15" alt="0110"> |
+| 0b0111 | 7 | 0x7 | N, E, S | <img src="./figures/0111.svg" width="15" alt="0111"> |
+| 0b1000 | 8 | 0x8 | **WEST** | <img src="./figures/1000.svg" width="15" alt="1000"> |
+| 0b1001 | 9 | 0x9 | N, W | <img src="./figures/1001.svg" width="15" alt="1001"> |
+| 0b1010 | 10 | 0xa | E, W | <img src="./figures/1010.svg" width="15" alt="1010"> |
+| 0b1011 | 11 | 0xb | N, E, W | <img src="./figures/1011.svg" width="15" alt="1011"> |
+| 0b1100 | 12 | 0xc | S, W | <img src="./figures/1100.svg" width="15" alt="1100"> |
+| 0b1101 | 13 | 0xd | N, S, W | <img src="./figures/1101.svg" width="15" alt="1101"> |
+| 0b1110 | 14 | 0xe | E, S, W | <img src="./figures/1110.svg" width="15" alt="1110"> |
+| 0b1111 | 15 | 0xf | **All** | <img src="./figures/1111.svg" width="15" alt="1111"> |
