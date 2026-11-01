@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 
-from typing import Any
-import random
 import sys
+from typing import Any
 
 import validate as val
-import maze
-import maze_solver as ms
+import display
+from mazegen import MazeGenerator
 
 
 def main() -> None:
@@ -16,47 +15,33 @@ def main() -> None:
     maze_info: dict[str, Any] = val.process_maze_info(config_info)
     maze_info = val.test_maze_info(maze_info)
 
-    maze_hex = maze.create_maze(maze_info['WIDTH'], maze_info['HEIGHT'])
-    maze_visited: list[list[bool]] = maze.initialize_visited(
-        maze_info['WIDTH'], 
-        maze_info['HEIGHT']
+    try:
+        generator: MazeGenerator = MazeGenerator(
+            maze_info['WIDTH'],
+            maze_info['HEIGHT'],
+            maze_info['ENTRY'],
+            maze_info['EXIT'],
+            perfect=maze_info['PERFECT'],
+            seed=maze_info.get('SEED')
         )
-    maze_visited[maze_info['ENTRY'][1]][maze_info['ENTRY'][0]] = True
+        generator.generate()
 
-    stack: list[tuple[int, int]] = [
-        (maze_info['ENTRY'][0], 
-         maze_info['ENTRY'][1])
-         ]
-
-    random.seed(maze_info["SEED"])
-    while stack:
-        x, y = stack[-1]
-        neighbors = maze.get_unvisited_neighbors(
-            x, y, maze_info['WIDTH'], maze_info['HEIGHT'], maze_visited
-        )
-
-        if neighbors:
-            neighbor_x, neighbor_y, direction = random.choice(neighbors)
-            maze.open_passage(maze_hex, x, y, direction)
-            maze_visited[neighbor_y][neighbor_x] = True
-            stack.append((neighbor_x, neighbor_y))
-        else:
-            stack.pop()
-
-    if not val.check_wall_consistency(maze_hex):
-        print("Error: Maze wall consistency check failed.")
-        exit(1)
-    else:
+        if not generator.is_consistent():
+            print("Error: Maze wall consistency check failed.")
+            sys.exit(1)
         print("Maze wall consistency check passed.")
 
-    maze.display_maze(maze_hex)
+        maze_hex: list[list[int]] = generator.grid
+        path: list[str] = generator.solve()
 
-    path: list[str] = ms.find_shortest_path(
-        maze_hex, 
-        maze_info['ENTRY'], 
-        maze_info['EXIT']
-        )
+        display.display_maze(
+            maze_hex=maze_hex, 
+            path=path, 
+            start=maze_info['ENTRY'])
 
+    except ValueError as error:
+        print(f"Error: {error}")
+        sys.exit(1)
 
     val.save_maze_info_to_file(maze_info, maze_hex, path)
 

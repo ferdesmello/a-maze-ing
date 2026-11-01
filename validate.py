@@ -4,12 +4,6 @@ import sys
 from typing import Any
 
 
-NORTH: int = 0b0001
-EAST:  int = 0b0010
-SOUTH: int = 0b0100
-WEST:  int = 0b1000
-
-
 def get_config_file_name() -> str:
     """Get the config file name from command line arguments or use default.
 
@@ -21,7 +15,7 @@ def get_config_file_name() -> str:
     else:
         print("No config file provided.")
         print("Using default config file: config.txt")
-        config_file: str = "config.txt"
+        config_file = "config.txt"
     return config_file
 
 
@@ -38,7 +32,7 @@ def load_maze_info_from_file(filename: str) -> str:
             config_info: str = config_file.read()
             print("Maze info loaded successfully:")
     except FileNotFoundError:
-        print("Error: 'config.txt' file not found.")
+        print(f"Error: '{filename}' file not found.")
         sys.exit(1)
     return config_info
 
@@ -73,7 +67,6 @@ def save_maze_info_to_file(
 
             for direction in path:
                 exit_file.write(direction)
-            
 
         print(f"Maze info saved in file '{filename}'.")
     except IOError:
@@ -93,11 +86,13 @@ def process_maze_info(config_info: str) -> dict[str, Any]:
     processed_info: dict[str, Any] = {}
     try:
         for line in lines:
+            if line.strip() == "" or line.startswith("#"):
+                continue
             if '=' in line:
                 key: str
                 value: str
                 key, value = line.split('=')
-                processed_info[key] = value
+                processed_info[key.strip()] = value.strip()
 
     except ValueError:
         print("Error: Invalid maze info format.")
@@ -155,17 +150,17 @@ def test_maze_info(maze_info: dict[str, Any]) -> dict[str, Any]:
         print("Error: HEIGHT must be positive integer between 1 and 100.")
         sys.exit(1)
 
-    if not (0 <= maze_info['ENTRY'][0] <= maze_info['WIDTH']):
+    if not (0 <= maze_info['ENTRY'][0] < maze_info['WIDTH']):
         print("Error: ENTRY x coordinate must be within the maze dimensions.")
         sys.exit(1)
-    if not (0 <= maze_info['ENTRY'][1] <= maze_info['HEIGHT']):
+    if not (0 <= maze_info['ENTRY'][1] < maze_info['HEIGHT']):
         print("Error: ENTRY y coordinate must be within the maze dimensions.")
         sys.exit(1)
 
-    if not (0 <= maze_info['EXIT'][0] <= maze_info['WIDTH']):
+    if not (0 <= maze_info['EXIT'][0] < maze_info['WIDTH']):
         print("Error: EXIT x coordinate must be within the maze dimensions.")
         sys.exit(1)
-    if not (0 <= maze_info['EXIT'][1] <= maze_info['HEIGHT']):
+    if not (0 <= maze_info['EXIT'][1] < maze_info['HEIGHT']):
         print("Error: EXIT y coordinate must be within the maze dimensions.")
         sys.exit(1)
 
@@ -195,36 +190,6 @@ def test_maze_info(maze_info: dict[str, Any]) -> dict[str, Any]:
 
     print("Maze info tested successfully.")
     return maze_info
-
-
-def check_wall_consistency(maze_hex: list[list[int]]) -> bool:
-    """Check whether adjacent cells agree on shared walls.
-
-    Args:
-        maze_hex (list[list[int]]): The maze grid to check
-    Returns:
-        bool: True if the maze is consistent, False otherwise
-    """
-    height = len(maze_hex)
-    width = len(maze_hex[0])
-
-    for y in range(height):
-        for x in range(width):
-            current = maze_hex[y][x]
-
-            # Check the east wall.
-            if x < width - 1:
-                neighbor = maze_hex[y][x + 1]
-                if bool(current & EAST) != bool(neighbor & WEST):
-                    return False
-
-            # Check the south wall.
-            if y < height - 1:
-                neighbor = maze_hex[y + 1][x]
-                if bool(current & SOUTH) != bool(neighbor & NORTH):
-                    return False
-
-    return True
 
 
 if __name__ == "__main__":
