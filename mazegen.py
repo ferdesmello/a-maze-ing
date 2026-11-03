@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 """Reusable maze generation module.
 
 Basic usage:
@@ -37,15 +38,23 @@ class MazeGenerator:
             False for a maze with loops and (almost) no dead-ends.
         seed (Optional[int]): Seed used for reproducible mazes.
     """
+    LOGO = [
+        "#...###",
+        "#.....#",
+        "###.###",
+        "..#.#..",
+        "..#.###",
+    ]
+    LOGO_SCALE = 1
 
     def __init__(
         self,
         width: int,
         height: int,
         entry: tuple[int, int],
-        exit_: tuple[int, int],
+        exit: tuple[int, int],
         perfect: bool = False,
-        seed: Optional[int] = None        
+        seed: Optional[int] = None
     ) -> None:
         """Create a generator (call generate() to build the maze).
 
@@ -53,10 +62,10 @@ class MazeGenerator:
             width (int): The width of the maze
             height (int): The height of the maze
             entry (tuple[int, int]): Entry coordinates (x, y)
-            exit_ (tuple[int, int]): Exit coordinates (x, y)
+            exit (tuple[int, int]): Exit coordinates (x, y)
+            perfect (bool): True for a perfect maze (no loops),
+                False (default) for a maze with loops and almost no dead-ends
             seed (Optional[int]): Seed for reproducibility, or None
-                (default) for a maze with loops and almost no dead-ends
-            perfect (bool): True for a perfect maze (no loops), False
         Raises:
             ValueError: If the dimensions are not positive, if entry or
             exit are outside the maze, or if entry and exit are equal.
@@ -65,18 +74,40 @@ class MazeGenerator:
             raise ValueError("Maze dimensions must be positive.")
         if not (0 <= entry[0] < width and 0 <= entry[1] < height):
             raise ValueError("Entry is outside the maze.")
-        if not (0 <= exit_[0] < width and 0 <= exit_[1] < height):
+        if not (0 <= exit[0] < width and 0 <= exit[1] < height):
             raise ValueError("Exit is outside the maze.")
-        if entry == exit_:
+        if entry == exit:
             raise ValueError("Entry and exit must be different points.")
 
         self.width: int = width
         self.height: int = height
         self.entry: tuple[int, int] = entry
-        self.exit: tuple[int, int] = exit_
+        self.exit: tuple[int, int] = exit
         self.perfect: bool = perfect
         self.seed: Optional[int] = seed
-        
+
+        self.blocked_cells: set[tuple[int, int]] = set()
+
+        logo_width = len(self.LOGO[0]) * self.LOGO_SCALE
+        logo_height = len(self.LOGO) * self.LOGO_SCALE
+
+        if width >= logo_width + 2 and height >= logo_height + 2:
+            offset_x = (width - logo_width) // 2
+            offset_y = (height - logo_height) // 2
+
+            for y, row in enumerate(self.LOGO):
+                for x, pixel in enumerate(row):
+                    if pixel == "#":
+                        for dy in range(self.LOGO_SCALE):
+                            for dx in range(self.LOGO_SCALE):
+                                self.blocked_cells.add((
+                                    offset_x + x * self.LOGO_SCALE + dx,
+                                    offset_y + y * self.LOGO_SCALE + dy,
+                                ))
+
+        if entry in self.blocked_cells or exit in self.blocked_cells:
+            raise ValueError("Entry and exit cannot overlap the 42 logo.")
+
         self._rng: random.Random = random.Random(seed)
         self._grid: list[list[int]] = self._create_grid()
         self._visited: list[list[bool]] = self._initialize_visited()
@@ -231,7 +262,8 @@ class MazeGenerator:
                 if y < self.height - 1 and self.can_move(x, y, "S"):
                     open_passages += 1
 
-        return open_passages - (self.width * self.height - 1)
+        open_cells = self.width * self.height - len(self.blocked_cells)
+        return open_passages - (open_cells - 1)
 
     def open_passage(self, x: int, y: int, direction: str) -> None:
         """Open a passage between a cell and its neighbor.
@@ -341,15 +373,22 @@ class MazeGenerator:
         return cells
 
     def _initialize_visited(self) -> list[list[bool]]:
-        """Create a 2D list (all False) to track visited cells.
+        """Create a 2D list (True/False) to track visited cells.
 
+        Args:
+            self (MazeGenerator): The MazeGenerator instance
         Returns:
-            list[list[bool]]: A 2D list initialized to False
+            list[list[bool]]: A 2D list initialized to (mostly) False
         """
-        maze_visited: list[list[bool]] = []
-        for _ in range(self.height):
-            maze_visited.append([False] * self.width)
-        return maze_visited
+        visited = [
+            [False] * self.width
+            for _ in range(self.height)
+        ]
+
+        for x, y in self.blocked_cells:
+            visited[y][x] = True
+
+        return visited
 
     def _get_unvisited_neighbors(
         self, x: int, y: int
@@ -411,11 +450,21 @@ class MazeGenerator:
         return True
 
     def _has_open_area_near(
-        self, x: int, y: int, neighbor_x: int, neighbor_y: int
+        self,
+        x: int,
+        y: int,
+        neighbor_x: int,
+        neighbor_y: int
     ) -> bool:
         """Return whether a 3x3 open block exists around two cells.
-
-        Only the blocks that contain one of the two cells are checked.
+            Only the blocks that contain one of the two cells are checked.
+        Args:
+            x (int): The x coordinate of the first cell
+            y (int): The y coordinate of the first cell
+            neighbor_x (int): The x coordinate of the second cell
+            neighbor_y (int): The y coordinate of the second cell
+        Returns:
+            bool: True if a 3x3 open block exists, False otherwise
         """
         left = min(x, neighbor_x) - 2
         right = max(x, neighbor_x)
@@ -471,12 +520,21 @@ class MazeGenerator:
             if not self._is_dead_end(x, y):
                 continue
 
+            # Do not modify blocked logo cells.
+            if (x, y) in self.blocked_cells:
+                continue
+
             closed_walls: list[tuple[int, int, str]] = []
             for neighbor_x, neighbor_y, direction in self.get_neighbors(
                 x, y
             ):
+                # Do not open passages into blocked logo cells.
+                if (neighbor_x, neighbor_y) in self.blocked_cells:
+                    continue
+
                 if not self.can_move(x, y, direction):
                     closed_walls.append((neighbor_x, neighbor_y, direction))
+
             self._rng.shuffle(closed_walls)
 
             # Try dead-end neighbors first: one wall fixes both cells.
@@ -502,9 +560,20 @@ class MazeGenerator:
         closed_walls: list[tuple[int, int, str]] = []
         for y in range(self.height):
             for x in range(self.width):
-                if x < self.width - 1 and not self.can_move(x, y, "E"):
+                if (
+                    x < self.width - 1
+                    and (x, y) not in self.blocked_cells
+                    and (x + 1, y) not in self.blocked_cells
+                    and not self.can_move(x, y, "E")
+                ):
                     closed_walls.append((x, y, "E"))
-                if y < self.height - 1 and not self.can_move(x, y, "S"):
+
+                if (
+                    y < self.height - 1
+                    and (x, y) not in self.blocked_cells
+                    and (x, y + 1) not in self.blocked_cells
+                    and not self.can_move(x, y, "S")
+                ):
                     closed_walls.append((x, y, "S"))
         self._rng.shuffle(closed_walls)
 

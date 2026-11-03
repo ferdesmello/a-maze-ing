@@ -10,13 +10,15 @@ def get_config_file_name() -> str:
     Returns:
         str: The config file name
     """
+    if len(sys.argv) > 2:
+        print("Error: too many arguments.")
+        print("Usage: python3 a_maze_ing.py config.txt")
+        sys.exit(1)
     if len(sys.argv) == 2:
-        config_file: str = sys.argv[1]
-    else:
-        print("No config file provided.")
-        print("Using default config file: config.txt")
-        config_file = "config.txt"
-    return config_file
+        return sys.argv[1]
+    print("No config file provided.")
+    print("Using default config file: config.txt")
+    return "config.txt"
 
 
 def load_maze_info_from_file(filename: str) -> str:
@@ -30,10 +32,13 @@ def load_maze_info_from_file(filename: str) -> str:
     try:
         with open(filename, "r") as config_file:
             config_info: str = config_file.read()
-            print("Maze info loaded successfully:")
     except FileNotFoundError:
         print(f"Error: '{filename}' file not found.")
         sys.exit(1)
+    except (OSError, UnicodeDecodeError):
+        print(f"Error: could not read '{filename}' as a text file.")
+        sys.exit(1)
+    print("Maze info loaded successfully:")
     return config_info
 
 
@@ -58,15 +63,12 @@ def save_maze_info_to_file(
                 exit_file.write("\n")
 
             exit_file.write("\n")
-            exit_file.write(f"{maze_info['ENTRY'][0]}, "
-                            f"{maze_info['ENTRY'][1]}")
-            exit_file.write("     # entry  (x, y)\n")
-            exit_file.write(f"{maze_info['EXIT'][0]}, "
-                            f"{maze_info['EXIT'][1]}")
-            exit_file.write("     # exit  (x, y)\n")
+            exit_file.write(f"{maze_info['ENTRY'][0]},"
+                            f"{maze_info['ENTRY'][1]}\n")
+            exit_file.write(f"{maze_info['EXIT'][0]},"
+                            f"{maze_info['EXIT'][1]}\n")
 
-            for direction in path:
-                exit_file.write(direction)
+            exit_file.write("".join(path) + "\n")
 
         print(f"Maze info saved in file '{filename}'.")
     except IOError:
@@ -82,24 +84,44 @@ def process_maze_info(config_info: str) -> dict[str, Any]:
     Returns:
         dict[str, Any]: The processed maze info
     """
-    lines: list[str] = config_info.splitlines()
     processed_info: dict[str, Any] = {}
-    try:
-        for line in lines:
-            if line.strip() == "" or line.startswith("#"):
-                continue
-            if '=' in line:
-                key: str
-                value: str
-                key, value = line.split('=')
-                processed_info[key.strip()] = value.strip()
 
-    except ValueError:
-        print("Error: Invalid maze info format.")
-        sys.exit(1)
+    for number, line in enumerate(config_info.splitlines(), start=1):
+        line = line.strip()
+        if line == "" or line.startswith("#"):
+            continue
+        if line.count("=") != 1:
+            print(f"Error: line {number} is not a KEY=VALUE pair: '{line}'")
+            sys.exit(1)
+        key, value = line.split("=")
+        key = key.strip()
+        if key in processed_info:
+            print(f"Error: line {number}: key '{key}' is defined twice.")
+            sys.exit(1)
+        processed_info[key] = value.strip()
 
     print("Maze info processed successfully.")
     return processed_info
+
+
+def parse_point(name: str, text: str) -> tuple[int, int]:
+    """Convert 'x,y' into a tuple of two integers.
+
+    Args:
+        name (str): The key name, used in error messages
+        text (str): The value to convert, e.g. "0,0"
+    Returns:
+        tuple[int, int]: The (x, y) coordinates
+    """
+    parts: list[str] = text.split(",")
+    if len(parts) != 2:
+        print(f"Error: {name} must have exactly two values: x,y")
+        sys.exit(1)
+    try:
+        return int(parts[0]), int(parts[1])
+    except ValueError:
+        print(f"Error: {name} coordinates must be integers.")
+        sys.exit(1)
 
 
 def test_maze_info(maze_info: dict[str, Any]) -> dict[str, Any]:
@@ -135,8 +157,8 @@ def test_maze_info(maze_info: dict[str, Any]) -> dict[str, Any]:
     try:
         maze_info['WIDTH'] = int(maze_info['WIDTH'])
         maze_info['HEIGHT'] = int(maze_info['HEIGHT'])
-        maze_info['ENTRY'] = tuple(map(int, maze_info['ENTRY'].split(',')))
-        maze_info['EXIT'] = tuple(map(int, maze_info['EXIT'].split(',')))
+        maze_info['ENTRY'] = parse_point('ENTRY', maze_info['ENTRY'])
+        maze_info['EXIT'] = parse_point('EXIT', maze_info['EXIT'])
         maze_info['OUTPUT_FILE'] = str(maze_info['OUTPUT_FILE'])
         maze_info['PERFECT'] = str(maze_info['PERFECT'])
     except ValueError:
