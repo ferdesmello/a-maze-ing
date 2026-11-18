@@ -38,7 +38,6 @@ def load_maze_info_from_file(filename: str) -> str:
     except (OSError, UnicodeDecodeError):
         print(f"Error: could not read '{filename}' as a text file.")
         sys.exit(1)
-    print("Maze info loaded successfully:")
     return config_info
 
 
@@ -100,7 +99,6 @@ def process_maze_info(config_info: str) -> dict[str, Any]:
             sys.exit(1)
         processed_info[key] = value.strip()
 
-    print("Maze info processed successfully.")
     return processed_info
 
 
@@ -210,7 +208,6 @@ def test_maze_info(maze_info: dict[str, Any]) -> dict[str, Any]:
             print("Error: SEED must be positive integer between 0 and 10000.")
             sys.exit(1)
 
-    print("Maze info tested successfully.")
     return maze_info
 
 

@@ -42,7 +42,6 @@ def main() -> None:
         if not generator.is_consistent():
             print("Error: Maze wall consistency check failed.")
             sys.exit(1)
-        print("Maze wall consistency check passed.")
 
         maze_hex: list[list[int]] = generator.grid
         path: list[str] = generator.solve()

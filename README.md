@@ -10,19 +10,13 @@ Example of the terminal output and interface:
 
 ## Description
 
-This project generates a maze from a configuration file, displays it in the
-terminal, finds a shortest path from the entry to the exit, and saves the
-generated maze and path to the configured output file.
+This project generates a maze from a configuration file, displays it in the terminal, finds a shortest path from the entry to the exit, and saves the generated maze and path to the configured output file.
 
-The maze can be perfect (without loops) or non-perfect (with loops and fewer
-dead ends). Mazes large enough for it also contain a blocked 42 logo area.
-
-* The minimum is width 9 and height 7
+The maze can be perfect (without loops) or non-perfect (with loops and fewer dead ends). The 42 pattern is displayed when the maze is at least 9 cells wide and 7 cells high. Smaller mazes are supported, but omit the pattern.
 
 ## Instructions
 
-The project requires Python 3 and uses the Python standard library at runtime.
-Optional development dependencies are listed in `requirements.txt`.
+The project requires Python 3 and uses the Python standard library at runtime. Optional development dependencies are listed in `requirements.txt`.
 
 ### Virtual environment
 
@@ -52,9 +46,7 @@ used:
 python3 a_maze_ing.py
 ```
 
-The interactive menu can generate another maze, show or hide its shortest
-path, rotate wall colours, or quit. The generated maze is written to the
-`OUTPUT_FILE` specified in the configuration.
+The interactive menu can generate another maze, show or hide its shortest path, rotate wall colours, or quit. The generated maze is written to the `OUTPUT_FILE` specified in the configuration.
 
 The Makefile also provides:
 
@@ -72,25 +64,31 @@ The following references cover the project topic and terminal rendering:
 
 - The 42 school project specifications
 
-https://en.wikipedia.org/wiki/Maze_generation_algorithm
+- Wikipedia articles about many things:
 
-https://en.wikipedia.org/wiki/Maze-solving_algorithm
+  - https://en.wikipedia.org/wiki/Maze_generation_algorithm
 
-https://en.wikipedia.org/wiki/Box_Drawing
+  - https://en.wikipedia.org/wiki/Maze-solving_algorithm
 
-https://en.wikipedia.org/wiki/ANSI_escape_code
+  - https://en.wikipedia.org/wiki/Box_Drawing
 
-https://gist.github.com/JBlond/2fea43a3049b38287e5e9cefc87b2124
+  - https://en.wikipedia.org/wiki/ANSI_escape_code
+
+- GitHub repo with ANSI code for colors:
+
+  - https://gist.github.com/JBlond/2fea43a3049b38287e5e9cefc87b2124
 
 ## AI-use description:
 
+In general, AI was extensively used for solving problems ("Why does it not work?"), explaining concepts ("Why does it work?"), and discussions.
+
+Four important topics in which AI was used were in designing the first graphical rendering of the maze on terminal, documenting the functions, merging many funtions in a single class, ands reviewing the code in search for errors. Also to make most of this README file.
 
 ## Additional sections
 
-### The complete structure and format of your config file.
+### The config file
 
-The configuration file contains six required parameters and one optional
-parameter. Blank lines and lines beginning with `#` are ignored.
+The configuration file contains six required parameters and one optional parameter. Blank lines and lines beginning with `#` are ignored.
 
 * `WIDTH` — integer from 1 to 100 for the number of columns.
 * `HEIGHT` — integer from 1 to 100 for the number of rows.
@@ -119,20 +117,15 @@ PERFECT=False
 SEED=42
 ```
 
-The output file contains one hexadecimal character per maze cell, one row per
-line. After a blank line, it contains the entry coordinates, exit coordinates,
-and shortest path as a sequence of `N`, `E`, `S`, and `W` directions.
+The output file contains one hexadecimal character per maze cell, one row per line. After a blank line, it contains the entry coordinates, exit coordinates, and shortest path as a sequence of `N`, `E`, `S`, and `W` directions.
 
-### The maze generation algorithm you chose.
-The generator first creates a grid with all four walls closed. It then uses a
-randomized depth-first search (recursive backtracking implemented with an
-explicit stack) to open passages and visit every available cell.
+### The maze generation algorithm
 
-When `PERFECT=False`, the generator removes selected dead ends and opens
-additional passages while avoiding fully open 3-by-3 areas. It ensures that
-the resulting maze has at least two independent loops.
+The generator first creates a grid with all four walls closed. It then uses DFS, a randomized depth-first search (recursive backtracking implemented with an explicit stack), to open passages and visit every available cell.
 
-### Why you chose this algorithm.
+When `PERFECT=False`, the generator removes selected dead ends and opens additional passages while avoiding fully open 3-by-3 areas. It ensures that the resulting maze has at least two independent loops.
+
+### The algorithm
 
 * It’s simple to explain, since it’s a stack-based DFS.
 
@@ -140,12 +133,9 @@ the resulting maze has at least two independent loops.
 
 * Dead-end removal is a separate step layered on top, which gives you the non-perfect mode.
 
-### What part of your code is reusable, and how.
+### Reusable code.
 
-`MazeGenerator` in `mazegen.py` is a standalone class that only uses the
-Python standard library. It is packaged as `mazegen-1.0.0-py3-none-any.whl`
-(and `.tar.gz`) at the root of the repository. Only `mazegen.py` is in the
-package; `display.py` and `validate.py` are not.
+`MazeGenerator` in `mazegen.py` is a standalone class that only uses the Python standard library. It is packaged as `mazegen-1.0.0-py3-none-any.whl` (and `.tar.gz`) at the root of the repository. Only `mazegen.py` is in the package; `display.py` and `validate.py` are not.
 
 Install and build:
 
@@ -172,27 +162,27 @@ grid = generator.grid      # grid[y][x]: int, bit 0=N, 1=E, 2=S, 3=W (1 = wall)
 path = generator.solve()   # shortest path, e.g. ["S", "S", "E", ...]
 ```
 
-Useful members: `blocked_cells` (cells of the 42 pattern, empty when the
-maze is too small), `count_loops()`, `count_dead_ends()`, `is_consistent()`.
-Invalid parameters raise `ValueError`.
+Useful members: `blocked_cells` (cells of the 42 pattern, empty when the maze is too small), `count_loops()`, `count_dead_ends()`, `is_consistent()`. Invalid parameters raise `ValueError`.
 
-### Your team and project management with:
+### Project management:
 
+#### The roles of each team member
 
-### The roles of each team member.
+`iscarval` was in charge of task separation and assignment, algorithm research and code review.
 
+`ferde-so` was responsible for handling user input, maze visualization, testing, and uploading on git.
 
-### Your anticipated planning and how it evolved until the end
+#### Planning
 
+Tha plan changed a lot over time as we ran out of time in the milestone and had other responsibilities. The tasks assigned to each merged and it was difficult to tell part was made more by one or the other.
 
-### What worked well and what could be improved
+#### What worked well and what could be improved
 
+Having had more time, it would have been much more fun and less stressful. More time to read about maze generation and solving algorithms, more time to improve on the graphics and sedimenting our understanding. But the project was completed faster than we thought, given the strong pressure we were under. Though we could have been more organized from the start.
 
-### Have you used any specific tools? Which ones?
+#### Tools used
 
-The project uses Python 3, the standard-library `random` and `collections`
-modules, and the built-in `pdb` debugger. `flake8` and `mypy` are listed as
-development dependencies and are run by the Makefile lint targets.
+The project uses Python 3, the standard-library `random` and `collections` modules, and the built-in `pdb` debugger. `flake8` and `mypy` are listed as development dependencies and are run by the Makefile lint targets.
 
 ## Advanced features
 

@@ -245,6 +245,7 @@ def display_maze(
         s = has_wall_south(gx, gy)
         e = has_wall_east(gx, gy)
         w = has_wall_west(gx, gy)
+
         return BOX_DRAWING.get((n, s, e, w), " ")
 
     def cell_content(x: int, y: int) -> str:

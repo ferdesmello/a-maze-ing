@@ -45,7 +45,6 @@ class MazeGenerator:
         "..#.#..",
         "..#.###",
     ]
-    LOGO_SCALE = 1
 
     def __init__(
         self,
@@ -88,8 +87,8 @@ class MazeGenerator:
 
         self.blocked_cells: set[tuple[int, int]] = set()
 
-        logo_width = len(self.LOGO[0]) * self.LOGO_SCALE
-        logo_height = len(self.LOGO) * self.LOGO_SCALE
+        logo_width = len(self.LOGO[0])
+        logo_height = len(self.LOGO)
 
         if width >= logo_width + 2 and height >= logo_height + 2:
             offset_x = (width - logo_width) // 2
@@ -98,12 +97,10 @@ class MazeGenerator:
             for y, row in enumerate(self.LOGO):
                 for x, pixel in enumerate(row):
                     if pixel == "#":
-                        for dy in range(self.LOGO_SCALE):
-                            for dx in range(self.LOGO_SCALE):
-                                self.blocked_cells.add((
-                                    offset_x + x * self.LOGO_SCALE + dx,
-                                    offset_y + y * self.LOGO_SCALE + dy,
-                                ))
+                        self.blocked_cells.add((
+                            offset_x + x,
+                            offset_y + y,
+                        ))
 
         if entry in self.blocked_cells or exit in self.blocked_cells:
             raise ValueError("Entry and exit cannot overlap the 42 logo.")
@@ -125,14 +122,14 @@ class MazeGenerator:
         """Generate a new maze (randomized depth-first search).
 
         The depth-first search always gives a perfect maze. If perfect
-        is False, dead-ends are then opened to create loops.
+            is False, dead-ends are then opened to create loops.
 
         Can be called several times: with the same seed, the sequence of
-        mazes is always the same, but each call gives a new maze.
+            mazes is always the same, but each call gives a new maze.
 
         Raises:
             ValueError: If perfect is False and the maze is too small
-            to have two independent loops.
+                to have two independent loops.
         """
         self._grid = self._create_grid()
         self._visited = self._initialize_visited()
