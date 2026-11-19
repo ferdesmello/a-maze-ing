@@ -58,35 +58,68 @@ make lint-strict
 make clean
 ```
 
+### The package
+
+Create the package.
+
+```bash
+# New environment
+python3 -m venv build_env
+source build_env/bin/activate
+
+# Install the build
+python -m pip install --upgrade pip
+python -m pip install build
+
+# Remove previously generated build artifacts
+rm -rf build dist mazegen.egg-info
+```
+
+Install the package.
+
+```bash
+# New environment
+python3 -m venv test_env
+source test_env/bin/activate
+
+# Install the wheel
+python -m pip install dist/mazegen-1.0.0-py3-none-any.whl
+
+# Verify
+python -m pip show mazegen
+```
+
+Make a new directory  `package_test/` andcopy into it: `a_maze_ing.py`, `display.py`, `validate.py`, and `config.txt` and try to use the module in the code.
+
 ## Resources
 
 The following references cover the project topic and terminal rendering:
 
 - The 42 school project specifications
 
-- Wikipedia articles about many things:
+- Wikipedia articles about maze generation and solving:
 
   - https://en.wikipedia.org/wiki/Maze_generation_algorithm
 
   - https://en.wikipedia.org/wiki/Maze-solving_algorithm
 
+- Wikipedia articles about custom terminal renderings:
+
   - https://en.wikipedia.org/wiki/Box_Drawing
 
   - https://en.wikipedia.org/wiki/ANSI_escape_code
 
-- GitHub repo with ANSI code for colors:
+- GitHub repo with ANSI commands for colors:
 
   - https://gist.github.com/JBlond/2fea43a3049b38287e5e9cefc87b2124
 
 ## AI-use description:
 
-In general, AI was extensively used for solving problems ("Why does it not work?"), explaining concepts ("Why does it work?"), and discussions.
+In general, AI was extensively used for solving problems ("Why does my code not work?"), explaining concepts ("Why does my code work?"), and discussions.
 
-Four important topics in which AI was used were in designing the first graphical rendering of the maze on terminal, documenting the functions, merging many funtions in a single class, ands reviewing the code in search for errors. Also to make most of this README file.
+Four important topics in which AI was used were in designing the first graphical rendering of the maze on terminal, documenting the functions, merging many funtions into a single class, and reviewing the code in search for errors. Also to make most of this README file.
 
-## Additional sections
-
-### The config file
+## The config file
 
 The configuration file contains six required parameters and one optional parameter. Blank lines and lines beginning with `#` are ignored.
 
@@ -119,83 +152,15 @@ SEED=42
 
 The output file contains one hexadecimal character per maze cell, one row per line. After a blank line, it contains the entry coordinates, exit coordinates, and shortest path as a sequence of `N`, `E`, `S`, and `W` directions.
 
+## The maze
+
 ### The maze generation algorithm
 
 The generator first creates a grid with all four walls closed. It then uses DFS, a randomized depth-first search (recursive backtracking implemented with an explicit stack), to open passages and visit every available cell.
 
 When `PERFECT=False`, the generator removes selected dead ends and opens additional passages while avoiding fully open 3-by-3 areas. It ensures that the resulting maze has at least two independent loops.
 
-### The algorithm
-
-* It’s simple to explain, since it’s a stack-based DFS.
-
-* It always produces a spanning tree, which is exactly a perfect maze.
-
-* Dead-end removal is a separate step layered on top, which gives you the non-perfect mode.
-
-### Reusable code.
-
-`MazeGenerator` in `mazegen.py` is a standalone class that only uses the Python standard library. It is packaged as `mazegen-1.0.0-py3-none-any.whl` (and `.tar.gz`) at the root of the repository. Only `mazegen.py` is in the package; `display.py` and `validate.py` are not.
-
-Install and build:
-
-```bash
-pip install mazegen-1.0.0-py3-none-any.whl
-# rebuild from sources:
-pip install build && python3 -m build
-```
-
-Basic example:
-
-```python
-from mazegen import MazeGenerator
-
-generator = MazeGenerator(
-    width=20, height=15,
-    entry=(0, 0), exit=(19, 14),
-    perfect=False,   # True for a maze with no loops
-    seed=42,         # same seed, same sequence of mazes
-)
-generator.generate()
-
-grid = generator.grid      # grid[y][x]: int, bit 0=N, 1=E, 2=S, 3=W (1 = wall)
-path = generator.solve()   # shortest path, e.g. ["S", "S", "E", ...]
-```
-
-Useful members: `blocked_cells` (cells of the 42 pattern, empty when the maze is too small), `count_loops()`, `count_dead_ends()`, `is_consistent()`. Invalid parameters raise `ValueError`.
-
-### Project management:
-
-#### The roles of each team member
-
-`iscarval` was in charge of task separation and assignment, algorithm research and code review.
-
-`ferde-so` was responsible for handling user input, maze visualization, testing, and uploading on git.
-
-#### Planning
-
-Tha plan changed a lot over time as we ran out of time in the milestone and had other responsibilities. The tasks assigned to each merged and it was difficult to tell part was made more by one or the other.
-
-#### What worked well and what could be improved
-
-Having had more time, it would have been much more fun and less stressful. More time to read about maze generation and solving algorithms, more time to improve on the graphics and sedimenting our understanding. But the project was completed faster than we thought, given the strong pressure we were under. Though we could have been more organized from the start.
-
-#### Tools used
-
-The project uses Python 3, the standard-library `random` and `collections` modules, and the built-in `pdb` debugger. `flake8` and `mypy` are listed as development dependencies and are run by the Makefile lint targets.
-
-## Advanced features
-
-The project includes:
-
-* Perfect and non-perfect maze generation.
-* Reproducible generation with an optional seed.
-* Shortest-path solving with breadth-first search.
-* Terminal rendering with Unicode box-drawing characters.
-* Optional shortest-path display.
-* Rotating wall colours.
-* A blocked 42 logo area for sufficiently large mazes.
-* A hexadecimal representation of each cell's closed walls.
+### Maze wall features
 
 Hexadecimal values for the walls
 | binary | decimal | hexdecimal | closed wall | figure |
@@ -216,3 +181,60 @@ Hexadecimal values for the walls
 | 0b1101 | 13 | 0xd | N, S, W | <img src="./figures/1101.svg" width="25" alt="1101"> |
 | 0b1110 | 14 | 0xe | E, S, W | <img src="./figures/1110.svg" width="25" alt="1110"> |
 | 0b1111 | 15 | 0xf | **All** | <img src="./figures/1111.svg" width="25" alt="1111"> |
+
+### The algorithm
+
+* It’s simple to explain, since it’s a stack-based DFS.
+
+* It always produces a spanning tree, which is exactly a perfect maze.
+
+* Dead-end removal is a separate step layered on top, which gives you the non-perfect mode.
+
+### Reusable module
+
+`MazeGenerator` in `mazegen.py` is a standalone class that only uses the Python standard library. It is packaged as `mazegen-1.0.0-py3-none-any.whl` (and `.tar.gz`) at the root of the repository. Only `mazegen.py` is in the package; `display.py` and `validate.py` are not.
+
+Install and build:
+
+```bash
+pip install mazegen-1.0.0-py3-none-any.whl
+# rebuild from sources:
+pip install build && python3 -m build
+```
+
+Basic example:
+
+```python
+from mazegen import MazeGenerator
+
+generator = MazeGenerator(
+    width=20, height=15,
+    entry=(0, 0), exit=(19, 14),
+    perfect=False,
+    seed=42,
+)
+generator.generate()
+
+grid = generator.grid
+path = generator.solve()
+```
+
+## Project management
+
+### The roles of each team member
+
+`iscarval` was in charge of task separation and assignment, algorithm research and code review.
+
+`ferde-so` was responsible for handling user input, maze visualization, testing, and git uploading.
+
+### Planning
+
+Tha plan changed a lot over time as we ran out of time in the milestone and had other responsibilities. The tasks assigned to each member merged and it was difficult to tell apart what was made more by one or the other.
+
+### What worked well and what could be improved
+
+Having had more time, it would have been much more fun and less stressful. More time to read about maze generation and solving algorithms, more time to improve on the graphics and sedimenting our understanding. But the project was completed faster than we thought, given the strong pressure we were under. Though we could have been more organized from the start.
+
+### Tools used
+
+The project uses Python 3, the standard-library `random` and `collections` modules, and the built-in `pdb` debugger. `flake8` and `mypy` are listed as development dependencies and are run by the Makefile lint targets.

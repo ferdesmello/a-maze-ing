@@ -69,7 +69,6 @@ def save_maze_info_to_file(
 
             exit_file.write("".join(path) + "\n")
 
-        print(f"Maze info saved in file '{filename}'.")
     except IOError:
         print(f"Error: Could not write to file '{filename}'.")
         sys.exit(1)
