@@ -4,8 +4,8 @@ import sys
 from typing import Any
 
 import validate as val
-import display
 from mazegen import MazeGenerator
+import display
 
 
 def main() -> None:

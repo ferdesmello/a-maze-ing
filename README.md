@@ -71,8 +71,8 @@ source build_env/bin/activate
 python -m pip install --upgrade pip
 python -m pip install build
 
-# Remove previously generated build artifacts
-rm -rf build dist mazegen.egg-info
+# Make the package
+python -m build
 ```
 
 Install the package.
@@ -103,6 +103,10 @@ The following references cover the project topic and terminal rendering:
 
   - https://en.wikipedia.org/wiki/Maze-solving_algorithm
 
+- Rozetta code for maze generation:
+
+  - https://rosettacode.org/wiki/Maze_generation#Python
+
 - Wikipedia articles about custom terminal renderings:
 
   - https://en.wikipedia.org/wiki/Box_Drawing
@@ -117,7 +121,7 @@ The following references cover the project topic and terminal rendering:
 
 In general, AI was extensively used for solving problems ("Why does my code not work?"), explaining concepts ("Why does my code work?"), and discussions.
 
-Four important topics in which AI was used were in designing the first graphical rendering of the maze on terminal, documenting the functions, merging many funtions into a single class, and reviewing the code in search for errors. Also to make most of this README file.
+Four important topics in which AI was used were in designing the first graphical rendering of the maze on terminal, documenting the functions, merging the many maze generation funtions into a single class, and reviewing the code in search for errors. Also to make most of this README file.
 
 ## The config file
 
@@ -208,8 +212,10 @@ Basic example:
 from mazegen import MazeGenerator
 
 generator = MazeGenerator(
-    width=20, height=15,
-    entry=(0, 0), exit=(19, 14),
+    width=20,
+	height=15,
+    entry=(0, 0),
+	exit=(19, 14),
     perfect=False,
     seed=42,
 )

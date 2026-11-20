@@ -67,7 +67,7 @@ class MazeGenerator:
             seed (Optional[int]): Seed for reproducibility, or None
         Raises:
             ValueError: If the dimensions are not positive, if entry or
-            exit are outside the maze, or if entry and exit are equal.
+                exit are outside the maze, or if entry and exit are equal.
         """
         if width <= 0 or height <= 0:
             raise ValueError("Maze dimensions must be positive.")
@@ -110,8 +110,7 @@ class MazeGenerator:
         self._visited: list[list[bool]] = self._initialize_visited()
 
     # ------------------------------------------------------------------
-    # Public API
-    # ------------------------------------------------------------------
+    # User methods
 
     @property
     def grid(self) -> list[list[int]]:
@@ -347,11 +346,12 @@ class MazeGenerator:
         else:
             raise ValueError("Direction must be N, E, S, or W.")
 
-        return (self._grid[y][x] & wall) == 0
+        if self._grid[y][x] & wall:
+            return False
+        return True
 
     # ------------------------------------------------------------------
-    # Internal helpers
-    # ------------------------------------------------------------------
+    # Internal functions
 
     def _create_grid(self) -> list[list[int]]:
         """Create a grid with all four walls closed in every cell.
@@ -413,7 +413,9 @@ class MazeGenerator:
         for wall in (NORTH, EAST, SOUTH, WEST):
             if self._grid[y][x] & wall:
                 walls += 1
-        return walls == 3
+        if walls == 3:
+            return True
+        return False
 
     def _get_dead_ends(self) -> list[tuple[int, int]]:
         """Return the coordinates of all dead-end cells."""
@@ -489,7 +491,7 @@ class MazeGenerator:
             direction (str): The direction from the cell to the neighbor
         Returns:
             bool: True if the passage was opened, False if it was
-            undone because it would create a 3x3 open area
+                undone because it would create a 3x3 open area
         """
         old_cell = self._grid[y][x]
         old_neighbor = self._grid[neighbor_y][neighbor_x]
@@ -507,7 +509,7 @@ class MazeGenerator:
         """Open one wall in each dead-end to join it to another corridor.
 
         A dead-end that cannot be opened without creating a 3x3 open
-        area is left as it is.
+            area is left as it is.
         """
         dead_ends = self._get_dead_ends()
         self._rng.shuffle(dead_ends)

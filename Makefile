@@ -17,7 +17,7 @@ install:
 		$(VENV_BIN)/$(PIP) install -r requirements.txt; \
 	fi
 
-# Execute the main script of your project
+# Execute the main script
 run:
 	@if [ -d "$(VENV_DIR)" ]; then \
 		$(VENV_BIN)/$(PYTHON) $(MAIN_SCRIPT) $(CONFIG_FILE); \

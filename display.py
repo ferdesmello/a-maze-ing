@@ -35,6 +35,38 @@ PATH_GLYPHS = {
     frozenset(("S", "W")): "┐",
 }
 
+# Box-drawing lookup table based on presence of
+# walls (North, South, East, West)
+BOX_DRAWING = {
+    # 4-way & 3-way junctions
+    (True,  True,  True,  True):  "┼",
+    (True,  True,  True,  False): "├",
+    (True,  True,  False, True):  "┤",
+    (True,  False, True,  True):  "┴",
+    (False, True,  True,  True):  "┬",
+
+    # 2-way corners & straight lines
+    (True,  True,  False, False): "│",
+    (False, False, True,  True):  "─",
+    (False, True,  True,  False): "┌",
+    (False, True,  False, True):  "┐",
+    (True,  False, True,  False): "└",
+    (True,  False, False, True):  "┘",
+
+    # Terminating vertical wall stubs
+    # set to space to prevent floating stubs
+    (True,  False, False, False): "│",
+    (False, True,  False, False): "│",
+
+    # Terminating horizontal wall stubs
+    # set to space to prevent floating stubs
+    (False, False, True,  False): " ",
+    (False, False, False, True):  " ",
+
+    # Fully open space
+    (False, False, False, False): " ",
+}
+
 
 def get_path_cells(
         path: list[str],
@@ -98,8 +130,7 @@ def display_maze(
     color: bool = True,
     blocked_cells: set[tuple[int, int]] | None = None
 ) -> None:
-    """Display a maze with seamless box-drawing
-    wall connections and path rendering.
+    """Display a maze with box-drawing wall connections and path rendering.
 
     Args:
         maze_hex: A 2D list of integers representing the maze grid.
@@ -142,38 +173,6 @@ def display_maze(
         if color:
             return f"{LOGO_COLOR}{text}{RESET}"
         return text
-
-    # Box-drawing lookup table based on presence of
-    # (North, South, East, West) walls
-    BOX_DRAWING = {
-            # 4-way & 3-way junctions
-            (True,  True,  True,  True):  "┼",
-            (True,  True,  True,  False): "├",
-            (True,  True,  False, True):  "┤",
-            (True,  False, True,  True):  "┴",
-            (False, True,  True,  True):  "┬",
-
-            # 2-way corners & straight lines
-            (True,  True,  False, False): "│",
-            (False, False, True,  True):  "─",
-            (False, True,  True,  False): "┌",
-            (False, True,  False, True):  "┐",
-            (True,  False, True,  False): "└",
-            (True,  False, False, True):  "┘",
-
-            # Terminating vertical wall stubs
-            # (keep these to close vertical walls)
-            (True,  False, False, False): "│",
-            (False, True,  False, False): "│",
-
-            # Terminating horizontal wall stubs
-            # (set to space to prevent floating stubs)
-            (False, False, True,  False): " ",
-            (False, False, False, True):  " ",
-
-            # Fully open space
-            (False, False, False, False): " ",
-        }
 
     def has_wall_north(gx: int, gy: int) -> bool:
         """Check if there is a vertical wall
@@ -280,7 +279,6 @@ def display_maze(
     for y in range(height):
         # ----------------------------------------------------
         # 1. Top intersections and horizontal wall row
-        # ----------------------------------------------------
         top = ""
         for x in range(width):
             top += wall(get_intersection_glyph(x, y))
@@ -298,7 +296,6 @@ def display_maze(
 
         # ----------------------------------------------------
         # 2. Vertical walls and cell interiors
-        # ----------------------------------------------------
         middle = ""
         for x in range(width):
             if maze_hex[y][x] & WEST:
@@ -323,7 +320,6 @@ def display_maze(
 
     # ----------------------------------------------------
     # 3. Bottom intersections and horizontal walls for final row
-    # ----------------------------------------------------
     bottom = ""
     for x in range(width):
         bottom += wall(get_intersection_glyph(x, height))

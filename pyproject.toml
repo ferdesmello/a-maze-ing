@@ -9,5 +9,12 @@ description = "Reusable maze generator and solver."
 readme = "README.md"
 requires-python = ">=3.10"
 
+license = { file = "LICENSE.md" }
+
+authors = [
+    { name = "iscarval" },
+    { name = "ferde-so" }
+]
+
 [tool.setuptools]
 py-modules = ["mazegen"]
